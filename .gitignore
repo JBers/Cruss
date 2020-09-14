@@ -1,0 +1,9 @@
+
+badwords.txt
+renameWordlist.txt
+temp1.txt
+temp2.txt
+testbed.py
+wordlists/
+.spyproject/
+__pycache__/

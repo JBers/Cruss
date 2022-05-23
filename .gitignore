@@ -4,6 +4,11 @@ renameWordlist.txt
 temp1.txt
 temp2.txt
 testbed.py
-wordlists/
+RenameThisCruss.aux
+RenameThisCruss.log
+RenameThisCruss.pdf
+RenameThisCruss.synctex.gz
+RenameThisCruss.tex
+wordlists/Misc_Wordlists
 .spyproject/
 __pycache__/

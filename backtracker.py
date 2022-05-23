@@ -16,6 +16,8 @@ class Backtrack(object):
         self.mcv_words_history = {}
         self.mcv_key_history = {}
         self.bookmark = 0
+        self.memo = {}
+        self.memo[0] = {}
         
     def setBacktrack(self, board, words, mcv_key):
         
@@ -23,16 +25,26 @@ class Backtrack(object):
         self.board_history[self.bookmark] = np.array(board, dtype = np.unicode_)
         self.mcv_words_history[self.bookmark] = words
         self.mcv_key_history[self.bookmark] = mcv_key
+        
         self.bookmark +=1
+        self.memo[self.bookmark] = {}
+        
+    def setMemotrack(self, memo):
+        
+        self.memo[self.bookmark] = memo.copy()
+        
+    def getMemotrack(self):
+        
+        return self.memo[self.bookmark]
     
     def getBacktrack(self):
         
         for bookmark in range((self.bookmark)-1, -1, -1) :
             
             if len(self.mcv_words_history[bookmark]) >= 1:
-                print(f'bookmark: {bookmark}')
+                # print(f'bookmark: {bookmark}')
                 
-                # self.bookmark = bookmark
+                self.bookmark = bookmark
                 return self.mcv_words_history[bookmark] , self.board_history[bookmark], self.mcv_key_history[bookmark]
                                                                             
     def cleanBacktrack(self):

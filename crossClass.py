@@ -13,13 +13,36 @@ class Cross(object):
         self.horiz = horiz
         self.board = np.ones((self.vert, self.horiz), dtype = np.unicode_)
         self.keys = {}
+        self.unitarys = []
+        
+    def get_dims(self):
+        return self.vert,self.horiz
         
     def design_board(self, blocks):
         
         for block in blocks:
             self.board[block] = 0
 
-
+    def tk_gui_setter(self,tkresult):
+        
+        for key in tkresult:
+            self.board[key] = tkresult[key]
+            
+    def tk_gui_getter(self):
+        
+        result = {}
+        
+        for i in range(self.vert):
+            for j in range(self.horiz):
+                result[(i,j)] = self.board[(i,j)]
+               
+        return result
+    
+    def tk_set_unitarys(self):
+        
+        unis = [self.keys[key][0] for key in self.keys if '1' not in self.keys[key][0]]
+        self.set_unitarys(unis)
+            
     def set_keys(self):
         
         clue = 0
@@ -96,4 +119,12 @@ class Cross(object):
 
     def set_board(self,board):
         self.board = np.array(board, dtype = np.unicode_)
+
+    def set_unitarys(self,words):
+        for word in words:
+            self.unitarys.append(word)
+            
+        
+    def get_unitarys(self):
+        return self.unitarys
         

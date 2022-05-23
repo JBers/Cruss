@@ -14,6 +14,23 @@ def getwordlist(wordlist_file):
         
     return wordlist
 
+def getwordlist2(wordlist_file):
+    
+    wordlist=[]
+    with open(wordlist_file, 'r') as f:
+        for line in f:
+            wordlist.append(line.rstrip('\n'))
+        
+    return set(wordlist)
+
+def getwordlist3(wordlist_file):
+    
+    with open(wordlist_file, 'r',errors='ignore') as f:
+        text = f.read()
+        newlist = text.split()
+        add_wordlist = set(filter(lambda s: len(s)>0,map(clean,newlist)))
+    return add_wordlist  
+
 def add_banned(banned_file, banned_words):
     
     with open(banned_file, 'a') as f:
@@ -48,5 +65,23 @@ def update_wordlist(wordlist1, wordlist2, arg):
             for word in mainwords:
                 if word not in badwords:
                     f1.write(word.lower())
+                    
+                    
+def clean(xx):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    newword=""
+    for letter in xx.lower():
+        if letter in alphabet:
+            newword+=letter
+    return newword
 
 # update_wordlist('renameWordlist.txt', 'wordlists/Misc_Wordlists/geographic.txt', True)
+
+# y =getwordlist3('wordlists/computerywords.txt')
+# print(y)
+
+
+
+# regex = r'\b[a-z][a-z][a-z]o\b'
+# words =  [w for w in y if re.search(regex, w)]
+# print(words)

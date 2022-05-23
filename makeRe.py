@@ -8,6 +8,8 @@ Created on Mon Aug 10 16:20:57 2020
 import re
 import random
 
+
+
 def make_regex(clue):
     
     #clue is list of form ['word','wordlength',vert or horiz,list of locations]
@@ -54,7 +56,7 @@ def find_mcv(keys):
         done = True            
     return mcv_key, done        
 
-def find_mcv2(keys, wordlist):
+def find_mcv2(keys, wordlist, memo):
     
     isdone = 0
     done = False
@@ -74,8 +76,9 @@ def find_mcv2(keys, wordlist):
             isdone+=1
             
         else:
-            regex = make_regex(keys[key])
-            words = find_words(regex, wordlist)
+            # regex = make_regex(keys[key])
+            # words = find_words(regex, wordlist)
+            words = find_words2(wordlist, keys[key], memo)
             if len(words) < current:
                 current = len(words)
                 current_key = key
@@ -86,16 +89,38 @@ def find_mcv2(keys, wordlist):
 
     return current_key, current_words, done            
 
-def find_words(regex, wordlist, memo = {}):
+def find_words(regex, wordlist, memo):
     
     try:
         return memo[regex]
     except:
-        words = re.findall(regex, wordlist)
-        memo[regex] = words
+        if type(wordlist) is set or type(wordlist) is list:
+            words =  [w for w in wordlist if re.search(regex, w)]
+            memo[regex] = words
+        else:
+            words = re.findall(regex, wordlist)
+            memo[regex] = words
+        
+        
     return words
 
-def is_words(keys, wordlist):
+def find_words2(wordlist, key, memo={}):
+    
+    words = []
+    memo_tuple = (key[0],key[2],key[3][0])
+    
+    try:
+        return memo[key[0]]
+    except:
+        for word in wordlist:
+            if subtractStr(word, key[0]):
+                words.append(word)
+        memo[key[0]] = words
+    return words   
+
+def is_words(keys, wordlist, unitarys):
+    
+    no_dupes_list = []
     
     for key in keys:
         
@@ -110,13 +135,44 @@ def is_words(keys, wordlist):
                 check = False
                 break
         if check:
-            reword = r'' + r'\b' + word + r'\b'
-            if len(find_words(reword, wordlist)) == 0:
+            # reword = r'' + r'\b' + word + r'\b'
+            # if len(find_words(reword, wordlist)) == 0:
+            if len(unitarys) == 0:
+                if word not in wordlist or word in no_dupes_list:
+                    return False
+            elif word not in wordlist and word not in unitarys or word in no_dupes_list:
                 return False
-        
+        no_dupes_list.append(word)
     return True
 
-def get_rand_word(words):
-    random.shuffle(words)
-    return words.pop()
+
+
+def subtractStr(x,y):
+    if len(x) == len(y):
+        for i in range(len(y)):
+            if y[i] == '1' or y[i] == x[i]:
+                continue
+            else:
+                return False
+        return True
+    
+def get_word(method = 'random',*args):
+    
+    if method == 'random':
+        def get_rand_word(words):
+            random.shuffle(words)
+            return words.pop()
+        return get_rand_word
+    
+    if method == "union":
+        def get_union_word(words,*args2):           
+            
+            words.sort(key=lambda word:word in args[0])
+            if words[-1] in args2[0]:
+                try:
+                    return words.pop(-2)
+                except:
+                    return words.pop()
+            return words.pop()
+        return get_union_word
     
